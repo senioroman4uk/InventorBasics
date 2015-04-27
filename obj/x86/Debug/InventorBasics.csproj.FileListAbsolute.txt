@@ -1,0 +1,8 @@
+d:\documents\visual studio 2010\Projects\InventorBasics\bin\Debug\InventorBasics.exe
+d:\documents\visual studio 2010\Projects\InventorBasics\bin\Debug\InventorBasics.pdb
+d:\documents\visual studio 2010\Projects\InventorBasics\obj\x86\Debug\InventorBasics.Form1.resources
+d:\documents\visual studio 2010\Projects\InventorBasics\obj\x86\Debug\InventorBasics.Properties.Resources.resources
+d:\documents\visual studio 2010\Projects\InventorBasics\obj\x86\Debug\InventorBasics.csproj.GenerateResource.Cache
+d:\documents\visual studio 2010\Projects\InventorBasics\obj\x86\Debug\InventorBasics.exe
+d:\documents\visual studio 2010\Projects\InventorBasics\obj\x86\Debug\InventorBasics.pdb
+D:\Documents\Visual Studio 2010\Projects\InventorBasics\obj\x86\Debug\InventorBasics.csprojResolveAssemblyReference.cache
