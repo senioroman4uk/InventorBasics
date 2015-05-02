@@ -128,38 +128,38 @@ namespace InventorBasics
             AssemblyDocument doc = inventor.ActiveDocument as AssemblyDocument;
             if(doc == null || doc.ComponentDefinition == null)
                 return;
+            
             AssemblyComponentDefinition partComponentDefinition = doc.ComponentDefinition;
             var wall = partComponentDefinition.Occurrences.get_ItemByName("wall:1");
             var weight = partComponentDefinition.Occurrences.get_ItemByName("weight:1");
             PartComponentDefinition weightDefinition = weight.Definition as PartComponentDefinition;
-            SurfaceBody surfaceBody = inventor.TransientBRep.Copy(weight.SurfaceBodies[1]);
-            Matrix wallMatrix = wall.Transformation, weigthMatrix = weight.Transformation;
-            weigthMatrix.Invert();
-            wallMatrix.PreMultiplyBy(weigthMatrix);
-            wallMatrix.SetToRotation(180, 
-                inventor.TransientGeometry.CreateVector(0, 1, 0)
-                //partComponentDefinition.WorkAxes[3].Line.Direction.AsVector()
-                , partComponentDefinition.WorkPoints[1].Point);//);
-            inventor.TransientBRep.Transform(surfaceBody, wallMatrix);
+            PartComponentDefinition wallDefinition = wall.Definition as PartComponentDefinition;
+            SurfaceBody surfaceBody2 = inventor.TransientBRep.Copy(weight.SurfaceBodies[1]);
+            Vector rotationVector = inventor.TransientGeometry.CreateVector(0, 1, 0);
+            Inventor.Point point = inventor.TransientGeometry.CreatePoint(0, 0, 0);
+
+            
+            
+            var collection = inventor.TransientObjects.CreateObjectCollection();
+            for (int i = 1; i <= 120; i++)
+            {
+                Matrix wallMatrix = wall.Transformation, weigthMatrix = weight.Transformation;
+                weigthMatrix.Invert();
+                wallMatrix.PreMultiplyBy(weigthMatrix);
+                SurfaceBody surfaceBody = inventor.TransientBRep.Copy(weight.SurfaceBodies[1]);
+                wallMatrix.SetToRotation(i * Math.PI / 180, rotationVector, point);
+                inventor.TransientBRep.Transform(surfaceBody, wallMatrix);    
+                inventor.TransientBRep.DoBoolean(surfaceBody2, surfaceBody, BooleanTypeEnum.kBooleanTypeUnion);
+            }
 
             NonParametricBaseFeatureDefinition featureDefinition = weightDefinition.Features.NonParametricBaseFeatures.CreateDefinition();
             featureDefinition.OutputType = BaseFeatureOutputTypeEnum.kSolidOutputType;
-            var collection = inventor.TransientObjects.CreateObjectCollection();
-            collection.Add(surfaceBody);
+
+            collection.Add(surfaceBody2);
             featureDefinition.BRepEntities = collection;
             NonParametricBaseFeature baseFeature = weightDefinition.Features.NonParametricBaseFeatures.AddByDefinition(featureDefinition);
-
-            SurfaceBody surfaceBody2 = inventor.TransientBRep.Copy(surfaceBody);
-            inventor.TransientBRep.Transform(surfaceBody2, wallMatrix);
-
-            inventor.TransientBRep.DoBoolean(surfaceBody, surfaceBody2, BooleanTypeEnum.kBooleanTypeUnion);
-            //NonParametricBaseFeatureDefinition featureDefinition = weightDefinition.Features.NonParametricBaseFeatures.CreateDefinition();
-            //featureDefinition.OutputType = BaseFeatureOutputTypeEnum.kSolidOutputType;
-            //var collection = inventor.TransientObjects.CreateObjectCollection();
-            //collection.Add(surfaceBody);
-            //featureDefinition.BRepEntities = collection;
-            //NonParametricBaseFeature baseFeature = weightDefinition.Features.NonParametricBaseFeatures.AddByDefinition(featureDefinition);
-           // CombineFeature combineFeature = partComponentDefinition;
+            
+            //CombineFeature combineFeature = doc.Features.CombineFeatures.Add(wall.SurfaceBodies[1], collection, PartFeatureOperationEnum.kCutOperation);
         }
     }
 }
